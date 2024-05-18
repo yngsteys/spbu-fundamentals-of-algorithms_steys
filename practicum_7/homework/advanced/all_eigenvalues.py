@@ -18,14 +18,39 @@ class Performance:
     time: float = 0.0
     relative_error: float = 0.0
 
+def qr_decomposition_gs(A: np.array):
+    m, n = A.shape
+    Q = np.zeros((m, n))
+    R = np.zeros((n, n))
 
-def get_all_eigenvalues(A: NDArrayFloat) -> NDArrayFloat:
+    for j in range(n):
+        v = A[:, j]  # Выбираем j-й столбец матрицы A
 
-    ##########################
-    ### PUT YOUR CODE HERE ###
-    ##########################
+        # Нормализация вектора v
+        R[j, j] = np.linalg.norm(v)
+        Q[:, j] = v / R[j, j]
 
-    pass
+        for i in range(j + 1, n):
+            # Вычисляем проекцию i-го столбца A на j-й столбец Q
+            R[j, i] = np.dot(Q[:, j], A[:, i])
+
+            # Вычитаем проекцию из i-го столбца A
+            A[:, i] = A[:, i] - R[j, i] * Q[:, j]
+
+    return Q, R
+
+
+def get_all_eigenvalues(A: NDArrayFloat) -> NDArrayFloat: 
+    n = A.shape[0]
+    A_k = np.copy(A)
+    
+    for i in range(n):
+        Q, R = qr_decomposition_gs(A_k)
+        A_k = R @ Q
+
+    eigenvalues = np.diag(A_k)  
+    return eigenvalues
+
 
 
 def run_test_cases(

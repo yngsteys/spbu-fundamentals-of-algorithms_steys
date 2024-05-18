@@ -40,3 +40,38 @@ if __name__ == "__main__":
     ##########################
 
     # computing eigenvalues...
+
+def qr_decomposition(A: np.array):
+    """
+    Optimized Gram-Schmidt process with normalization.
+    The coefficients q will be calculated at each step of the algorithm.
+    Each time we will subtract the component of the vector from all the vectors q at once.
+    """
+    m, n = A.shape  # Get both dimensions of A
+    Q = A.copy()
+    R = np.zeros((n, n))  # Initialize R with zeros
+
+    for k in range(n): # Orthogonalize the k-th column
+        R[k, k] = np.linalg.norm(Q[:, k]) # Normalize the k-th column
+        Q[:, k] /= R[k, k] 
+        for j in range(k + 1, n): # Subtract the projection from subsequent columns 
+            R[k, j] = np.dot(Q[:, k], Q[:, j])
+            Q[:, j] -= R[k, j] * Q[:, k] 
+    return Q, R
+
+def modified_gram_schmidt(A):
+    m, n = A.shape
+    Q = np.zeros((m, n))
+    R = np.zeros((n, n))
+
+    for k in range(n):
+        v = A[:, k]
+        for j in range(k):
+            R[j, k] = np.dot(Q[:, j], v)
+            v -= R[j, k] * Q[:, j]
+        Q[:, k] = v
+        R[k, k] = np.linalg.norm(Q[:, k])
+        Q[:, k] = Q[:, k] / R[k, k]
+
+    return Q, R
+

@@ -32,7 +32,7 @@ def tweak(colors, n_max_colors):
     return new_colors
 
 def solve_via_simulated_annealing(
-    G: nx.Graph, n_max_colors: int, initial_colors: NDArrayInt, n_iters: int, temperature: int
+    G: nx.Graph, n_max_colors: int, initial_colors: NDArrayInt, n_iters: int, temperature: int = 500,
 ):
     loss_history = np.zeros((n_iters,), dtype=np.int_)
     cur_colors = initial_colors.copy()
@@ -75,7 +75,7 @@ if __name__ == "__main__":
     initial_colors = np.random.randint(low=0, high=n_max_colors - 1, size=len(G.nodes))
 
     loss_history = solve_via_simulated_annealing(
-        G, n_max_colors, initial_colors, n_max_iters, temperature
+        G, n_max_colors, initial_colors, n_max_iters
     )
     print(loss_history[-1])
     plot_loss_history(loss_history)
